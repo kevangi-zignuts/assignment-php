@@ -1,0 +1,66 @@
+<?php 
+    session_start();
+    require_once "adminNavbar.php";
+    if(!isset($_SESSION["admin"])){
+        header("Location: adminDashboard.php");
+        exit();
+    }
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="mx-auto form-width margin-top">
+        <?php
+            if(isset($_POST["create"])){
+                $testName = $_POST["name"];
+                $description = $_POST["desc"];
+                $level = $_POST["level"];
+
+                $errors = array();
+                if(empty($testName) OR empty($description) OR empty($level)){
+                    array_push($errors, "All fields are required");
+                } 
+
+                require_once "config/database.php";
+                $sql = "INSERT INTO test (test_name, description, level) VALUES (?, ?, ?)";
+                $stmt = mysqli_stmt_init($conn);
+                $prepareStmt = mysqli_stmt_prepare($stmt, $sql);
+                if($prepareStmt){
+                    mysqli_stmt_bind_param($stmt, "sss", $testName, $description, $level);
+                    mysqli_stmt_execute($stmt);
+                    $_SESSION["admin"] = "yes";
+                    header("Location: adminDashboard.php");
+                    die();
+                }else{
+                    die("Something went wrong");
+                }
+            }
+        ?>
+
+        <h1 class="text-center h1">Create New Test</h1>
+        <form method="post" action="create.php">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" id="" placeholder="" name="name">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" id="" rows="3" name="desc"></textarea>
+            </div>
+            <select class="form-control" name="level">
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+            </select>
+            <button type="submit" class="btn btn-primary margin-top" name="create">Create Test</button>
+        </form>
+    </div>
+</body>
+</html>
