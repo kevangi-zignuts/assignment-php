@@ -1,3 +1,11 @@
+<?php 
+    session_start();
+    if(isset($_SESSION["admin"])){
+        header("Location: adminDashboard.php");
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +13,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="css/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="css/style.css">    
+    <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="mx-auto form-width margin-top">
@@ -14,13 +22,15 @@
             if(isset($_POST["login"])){
                 $email = $_POST["email"];
                 $password = $_POST["password"];
-                require_once "config/database.php";
-                $sql = "SELECT * FROM users where email = '$email'";
+                require_once "../config/database.php";
+                $sql = "SELECT * FROM admin where email = '$email'";
                 $result = mysqli_query($conn, $sql);
-                $user = mysqli_fetch_array($result, MYSQLI_ASSOC); 
-                if($user){
-                    if(password_verify($password, $user["password"])){
-                        echo "<div class='alert alert-success' role='alert'>You are Login successfully</div>";
+                $admin = mysqli_fetch_array($result, MYSQLI_ASSOC);
+                if($admin){
+                    if($password === $admin["password"]){
+                        $_SESSION["admin"] = "yes";
+                        header("Location: adminDashboard.php");
+                        die();
                     }else{
                         echo "<div class='alert alert-danger' role='alert'>Password Doesn't match</div>";
                     }
@@ -31,8 +41,8 @@
 
         ?>
 
-        <h1 class="text-center h1">Login Form</h1>
-        <form method="post" action="userLogin.php">
+        <h1 class="text-center h1">Admin Login</h1>
+        <form action="adminLogin.php" method="post">
             <div class="form-group">
                 <label>Email address</label>
                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" name="email">
@@ -40,11 +50,10 @@
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+                <input type="password" class="form-control" id="" placeholder="Password" name="password">
             </div>
             <button type="submit" class="btn btn-primary" name="login">Login</button>
         </form>
-        <p>Not registered yet <a class="link-opacity-50-hover" href="userSignIn.php">Register Here</a><p>
     </div>
 </body>
 </html>

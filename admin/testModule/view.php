@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    require_once "adminNavbar.php";
+    require_once "../adminNavbar.php";
     if(!isset($_SESSION["admin"])){
         header("Location: adminDashboard.php");
         exit();
@@ -14,11 +14,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./../../css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../css/style.css">
 </head>
 <body>
     <div class="mx-auto form-width margin-top">
         <?php 
-        require_once "config/database.php"; 
+        require_once "./../../config/database.php"; 
             $id = $_GET['id'];
             $sql = "SELECT * FROM test WHERE id = $id";
             $result = mysqli_query($conn, $sql);
@@ -39,8 +41,8 @@
             </div>
             <div class="margin-top">
                 <a href="edit.php?id=<?php echo $id?>" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">Edit</a>
-                <a href="add.php" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">Add Question</a>
-                <a href="#" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">View All Question</a>
+                <a href="./../questionModule/add.php?id=<?php echo $id?>" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">Add Question</a>
+                <a href="./../questionModule/viewQuestions.php?id=<?php echo $id?>" class="btn btn-outline-primary" tabindex="-1" role="button" aria-disabled="true">View All Question</a>
             </div>
     </div>
 </body>

@@ -1,8 +1,8 @@
 <?php 
     session_start();
-    require_once "adminNavbar.php";
+    require_once "./../adminNavbar.php";
     if(!isset($_SESSION["admin"])){
-        header("Location: adminDashboard.php");
+        header("Location: ./../adminDashboard.php");
         exit();
     }
 ?>
@@ -14,6 +14,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="./../../css/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="./../../css/style.css">
 </head>
 <body>
     <div class="mx-auto form-width margin-top">
@@ -27,8 +29,11 @@
                 if(empty($testName) OR empty($description) OR empty($level)){
                     array_push($errors, "All fields are required");
                 } 
+                if(count($errors)>0){
+                    echo "<div class='alert alert-danger' role='alert'>$errors[0]</div>";
+                }
 
-                require_once "config/database.php";
+                require_once "./../../config/database.php";
                 $sql = "INSERT INTO test (test_name, description, level) VALUES (?, ?, ?)";
                 $stmt = mysqli_stmt_init($conn);
                 $prepareStmt = mysqli_stmt_prepare($stmt, $sql);
@@ -36,7 +41,7 @@
                     mysqli_stmt_bind_param($stmt, "sss", $testName, $description, $level);
                     mysqli_stmt_execute($stmt);
                     $_SESSION["admin"] = "yes";
-                    header("Location: adminDashboard.php");
+                    header("Location: ./../adminDashboard.php");
                     die();
                 }else{
                     die("Something went wrong");
